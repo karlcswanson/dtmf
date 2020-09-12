@@ -1,0 +1,17 @@
+{
+  "name": "dtmf",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pack": "zip -r function.zip ./",
+    "push": "aws lambda update-function-code --function-name helloWorld --zip-file fileb://function.zip"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.751.0",
+    "twilio": "^3.49.1"
+  }
+}
