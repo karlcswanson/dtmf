@@ -47,7 +47,7 @@ async function getCurrentIP() {
 }
 
 function digitToIP(digits) {
-  return digits.replace(/\*/g,'.');
+  return digits.replace(/\*/g, '.');
 }
 
 async function updateR53Record(ip) {
@@ -129,10 +129,10 @@ async function apiHandler(path, event) {
   switch (path) {
     case 'join': return topMenu();
     case 'select': return selectOption(event.queryStringParameters.Digits);
-    case 'option1': return await optionOne();
+    case 'option1': return optionOne();
     case 'option2': return optionTwo();
-    case 'getip': return await getCurrentIP();
-    case 'gather2': return await SetIP(event.queryStringParameters.Digits);
+    case 'getip': return getCurrentIP();
+    case 'gather2': return SetIP(event.queryStringParameters.Digits);
     default: return 'invalid path';
   }
 }
