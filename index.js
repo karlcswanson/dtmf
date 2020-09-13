@@ -1,4 +1,10 @@
 const VoiceResponse = require('twilio').twiml.VoiceResponse;
+const AWS = require('aws-sdk');
+const dns = require('dns');
+const dnsPromises = dns.promises;
+
+
+var route53 = new AWS.Route53({apiVersion: '2013-04-01'});
 
 function topMenu() {
     const twimlout = new VoiceResponse();
@@ -15,7 +21,6 @@ function topMenu() {
 
 function selectOption(digit) {
     const Digit = parseInt(digit);
-    // return `digit ${digit}`;
     switch (Digit) {
         case 1: return optionOne();
             break;
@@ -28,49 +33,70 @@ function selectOption(digit) {
     return;
 }
 
-function optionOne() {
-    const response = new VoiceResponse();
-    response.say({
+async function optionOne() {
+    const twimlout = new VoiceResponse();
+    const ip = await getCurrentIP();
+    twimlout.say({
         voice: 'woman',
         language: 'en-US'
-    }, 'You have selected option 1');
-    return response.toString();
+    }, `You have selected option 1.  The current IP is ${ip}`);
+    twimlout.pause({
+        length: 3
+    });
+    twimlout.redirect({
+        method: 'GET'
+    }, './join');
+    return twimlout.toString();
 }
 
 function optionTwo() {
-    const response = new VoiceResponse();
-    response.say({
-        voice: 'woman',
-        language: 'en-US'
-    }, 'You have selected option 2');
-    return response.toString();
+    const twimlout = new VoiceResponse();
+
+    const gather = twimlout.gather({
+        action: './gather2',
+        method: 'GET',
+        finishOnKey: '#'
+    });
+    gather.say('Enter the new IP for dtmf.karlcswanson.com then press #');
+
+    return twimlout.toString();
 }
 
 function backToRoot() {
-    const response = new VoiceResponse();
-    response.say({
+    const twimlout = new VoiceResponse();
+    twimlout.say({
         voice: 'woman',
         language: 'en-US'
     }, 'You have selected an invalid option.');
-    response.pause({
+    twimlout.pause({
         length: 3
     });
-    response.redirect({
+    twimlout.redirect({
         method: 'GET'
     }, './join');
-    return response.toString();
+    return twimlout.toString();
 }
 
-function getCurrentIP() {
-    return;
+async function getCurrentIP() {
+    let ip;
+    const options = {
+        family: 4,
+        hints: dns.ADDRCONFIG | dns.V4MAPPED,
+    };
+    
+    await dnsPromises.lookup('dtmf.karlcswanson.com', options).then((result) => {
+        ip = result.address;
+    });
+    return ip;
 }
 
-function SetIP() {
-    return;
+
+async function SetIP(digits) {
+    return `${digits}`;
 }
 
 
-function apiHandler(path, event) {
+async function apiHandler(path, event) {
     let output;
 
     switch(path) {
@@ -78,17 +104,20 @@ function apiHandler(path, event) {
             break;
         case "select": return selectOption(event.queryStringParameters.Digits);
             break;
-        case "option1": return optionOne();
+        case "option1": return await optionOne();
             break;
         case "option2": return optionTwo();
             break;
+        case "getip": return await getCurrentIP();
+            break;
+        case "gather2" : return await SetIP(event.queryStringParameters.Digits);
         default: return 'invalid path';
             break;
     }
 }
 
 exports.handler = async (event, context, callback) => {
-    const output = apiHandler(event.path.substring(1), event);
+    const output = await apiHandler(event.path.substring(1), event);
     const response = {
         statusCode: 200,
         headers: {
