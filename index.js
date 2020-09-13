@@ -91,8 +91,37 @@ async function getCurrentIP() {
 }
 
 
-async function SetIP(digits) {
-    return `${digits}`;
+function digitToIP(digits) {
+    return digits.replace('*','.');
+}
+
+async function SetIP(ip) {
+    var params = {
+        ChangeBatch: {
+            Changes: [
+                {
+                    Action: "UPSERT", 
+                    ResourceRecordSet: {
+                    Name: "dtmf.karlcswanson.com", 
+                    ResourceRecords: [
+                        {
+                            Value: ip
+                        }
+                    ], 
+                    TTL: 60, 
+                    Type: "A"
+                }
+            }
+         ], 
+        Comment: "Updated via DTMF"
+    }, 
+    HostedZoneId: process.env.HOSTED_ZONE_ID
+    };
+
+    const res = await route53.changeResourceRecordSets(params).promise();
+
+    console.log(res);
+    return res;
 }
 
 
@@ -116,7 +145,7 @@ async function apiHandler(path, event) {
     }
 }
 
-exports.handler = async (event, context, callback) => {
+exports.handler = async (event, context) => {
     const output = await apiHandler(event.path.substring(1), event);
     const response = {
         statusCode: 200,
