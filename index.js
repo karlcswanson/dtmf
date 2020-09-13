@@ -92,10 +92,22 @@ async function getCurrentIP() {
 
 
 function digitToIP(digits) {
-    return digits.replace('*','.');
+    return digits.replace(/\*/g,'.');
 }
 
-async function SetIP(ip) {
+async function SetIP(digit) {
+    const ip = digitToIP(digit);
+    const status = await updateR53Record(ip);
+    
+    const twimlout = new VoiceResponse();
+    twimlout.say({
+        voice: 'woman',
+        language: 'en-US'
+    }, 'IP has been updated!');
+    return twimlout.toString();
+}
+
+async function updateR53Record(ip) {
     var params = {
         ChangeBatch: {
             Changes: [
