@@ -13,5 +13,10 @@
   "dependencies": {
     "aws-sdk": "^2.751.0",
     "twilio": "^3.49.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.9.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0"
   }
 }
