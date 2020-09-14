@@ -56,7 +56,7 @@ async function updateR53Record(ip) {
       Changes: [{
         Action: 'UPSERT',
         ResourceRecordSet: {
-          Name: 'dtmf.karlcswanson.com',
+          Name: process.env.DTMF_DOMAIN_NAME,
           ResourceRecords: [{
             Value: ip,
           }],
@@ -83,6 +83,12 @@ async function SetIP(digit) {
     voice: 'woman',
     language: 'en-US',
   }, 'IP has been updated!');
+  twimlout.pause({
+    length: 3,
+  });
+  twimlout.redirect({
+    method: 'GET',
+  }, './join');
   return twimlout.toString();
 }
 
@@ -110,7 +116,7 @@ function optionTwo() {
     method: 'GET',
     finishOnKey: '#',
   });
-  gather.say('Enter the new IP for dtmf.karlcswanson.com then press #');
+  gather.say('Enter the new IP for dtmf dot karl c swanson dot com.  Use the star key for dots. Press pound when complete');
 
   return twimlout.toString();
 }
