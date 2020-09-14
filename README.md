@@ -2,7 +2,7 @@
 
 Update your DNS records via phone!
 
-## DynDNS DTMF Features
+## Features
 
 * **Press 1** - Get current IP
 * **Press 2** - Update IP.  When prompted, enter in a new IP.  Press *#* when complete
@@ -27,7 +27,7 @@ Update your DNS records via phone!
             "Sid": "VisualEditor0",
             "Effect": "Allow",
             "Action": "route53:ChangeResourceRecordSets",
-            "Resource": "arn:aws:route53:::hostedzone/Z1BQ9U99AQU9TU"
+            "Resource": "arn:aws:route53:::hostedzone/XXXXXXXXXXXXXX"
         },
         {
             "Sid": "VisualEditor1",
@@ -39,7 +39,7 @@ Update your DNS records via phone!
             "Sid": "VisualEditor2",
             "Effect": "Allow",
             "Action": "route53:ListResourceRecordSets",
-            "Resource": "arn:aws:route53:::hostedzone/Z1BQ9U99AQU9TU"
+            "Resource": "arn:aws:route53:::hostedzone/XXXXXXXXXXXXXX"
         }
     ]
 }
@@ -51,6 +51,23 @@ Update your DNS records via phone!
 
 * Provision new number
 * Point to API endpoint for lambda function
+
+### Local Setup
+
+Download project from github and install node dependencies.
+
+```bash
+git clone https://github.com/karlcswanson/dtmf.git
+cd dtmf/
+npm install
+```
+
+Compress and upload to AWS Lambda.
+
+```bash
+npm run pack
+npm run push
+```
 
 ## Future Feature Ideas
 
