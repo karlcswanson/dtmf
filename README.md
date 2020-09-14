@@ -75,6 +75,7 @@ npm run push
 * Script API trigger creation
 * Fax confirmation usig Twilio fax API
 * IP input validation
+* Use Webpack to pack for upload
 
 ## Notes
 

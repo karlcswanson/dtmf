@@ -15,7 +15,7 @@ function topMenu() {
   });
   gather.say('Hello! Welcome to DNS via DTMF.  Press 1 to get the current IP.  Press 2 to set a new IP.');
 
-  return twimlout.toString();
+  return gather.toString();
 }
 
 function backToRoot() {
